@@ -63,7 +63,10 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
     zIndex: PropTypes.number.isRequired,
 
-    touchEnabled: PropTypes.bool
+    touchEnabled: PropTypes.bool,
+
+    subRowPath: PropTypes.string
+
   },
 
   componentWillMount() {
@@ -165,6 +168,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         cell={columnProps.cell}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
+        subRowPath={this.props.subRowPath}
       />
     );
   },

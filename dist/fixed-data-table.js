@@ -3912,7 +3912,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing) {
+    if (props.isColumnResizing || oldState && oldState.isColumnResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
@@ -3932,7 +3932,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     var columnInfo = this._populateColumnsAndColumnData(columns, columnGroups, oldState);
 
     var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
+    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn && columnInfo.bodyScrollableColumns.length > 0) {
       // If selected column is a fixed column, don't scroll
       var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
       if (props.scrollToColumn >= fixedColumnsCount) {

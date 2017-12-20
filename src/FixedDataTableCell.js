@@ -207,7 +207,7 @@ var FixedDataTableCell = createReactClass({
 
   render() /*object*/ {
 
-    var {height, width, columnKey, ...props} = this.props;
+    var {height, width, columnKey, subRowPath, ...props} = this.props;
 
     var style = {
       height,
@@ -281,7 +281,8 @@ var FixedDataTableCell = createReactClass({
     var cellProps = {
       columnKey,
       height,
-      width
+      width,
+      subRowPath
     };
 
     if (props.rowIndex >= 0) {

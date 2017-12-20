@@ -64,13 +64,9 @@ class FixedDataTableRowImpl extends React.Component {
      */
     subRowHeight: PropTypes.number,
 
-    /**
-     * the row expanded.
-     */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+    rowSubRowsCountGetter: PropTypes.func,
+
+    subRowTopOffsetGetter: PropTypes.func,
 
     /**
      * The row index.
@@ -140,6 +136,8 @@ class FixedDataTableRowImpl extends React.Component {
     onColumnReorderEnd: PropTypes.func,
 
     touchEnabled: PropTypes.bool,
+
+    subRowPath: PropTypes.string,
   };
 
   render() /*object*/ {
@@ -175,10 +173,11 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        subRowPath={this.props.subRowPath}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
-    var fixedRightColumns = 
+    var fixedRightColumns =
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
@@ -197,6 +196,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        subRowPath={this.props.subRowPath}
       />;
     var fixedRightColumnsShdadow = fixedRightColumnsWidth ?
       this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - 5) : null;
@@ -221,13 +221,15 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        subRowPath={this.props.subRowPath}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
-    var rowExpanded = this._getRowExpanded(subRowHeight);
+
+    var subRowsCount = this.props.rowSubRowsCountGetter && this.props.rowSubRowsCountGetter({rowIndex: this.props.index, subRowPath: this.props.subRowPath});
+
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height,
       width: this.props.width,
     };
 
@@ -251,11 +253,33 @@ class FixedDataTableRowImpl extends React.Component {
           {fixedRightColumns}
           {fixedRightColumnsShdadow}
         </div>
-        {rowExpanded && <div
+        {subRowsCount &&
+        <div
           className={cx('fixedDataTableRowLayout/rowExpanded')}
-          style={rowExpandedStyle}>
-          {rowExpanded}
-        </div>}
+          style={rowExpandedStyle}
+        >
+          { Array(subRowsCount).fill(null).map((dummy, index) => {
+
+            var subRowPath =  this.props.subRowPath
+              ? `${this.props.subRowPath}.${index}`
+              : index.toString();
+
+            var topOffset = this.props.subRowTopOffsetGetter({rowIndex: this.props.index, subRowPath});
+
+            var subRowStyle = {
+              top: this.props.height * (index + 1 + topOffset),
+              position: 'absolute'
+            };
+
+            return (
+              <div style={subRowStyle} key={subRowPath}>
+                <FixedDataTableRowImpl {...this.props} subRowPath={subRowPath}/>
+              </div>
+            );
+          })
+          }
+        </div>
+        }
         {columnsRightShadow}
       </div>
     );
@@ -269,39 +293,20 @@ class FixedDataTableRowImpl extends React.Component {
     return width;
   };
 
-  _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {
-    if (this.props.rowExpanded) {
-      var rowExpandedProps = {
-        rowIndex: this.props.index,
-        height: subRowHeight,
-        width: this.props.width,
-      };
-
-      var rowExpanded;
-      if (React.isValidElement(this.props.rowExpanded)) {
-        rowExpanded = React.cloneElement(this.props.rowExpanded, rowExpandedProps);
-      } else if (typeof this.props.rowExpanded === 'function') {
-        rowExpanded = this.props.rowExpanded(rowExpandedProps);
-      }
-
-      return rowExpanded;
-    }
-  }
-
   _renderColumnsLeftShadow = (/*number*/ left) => /*?object*/ {
     var className = cx({
       'fixedDataTableRowLayout/fixedColumnsDivider': left > 0,
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
-     });
-     var dividerHeight = this.props.cellGroupWrapperHeight ?
-       this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
-     var style = {
-       left: left,
-       height: dividerHeight
-     };
-     return <div className={className} style={style} />;
+    });
+    var dividerHeight = this.props.cellGroupWrapperHeight ?
+      this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
+    var style = {
+      left: left,
+      height: dividerHeight
+    };
+    return <div className={className} style={style}/>;
   };
 
   _renderFixedRightColumnsShadow = (/*number*/ left) => /*?object*/ {
@@ -317,7 +322,7 @@ class FixedDataTableRowImpl extends React.Component {
       height: this.props.height,
       left: left
     };
-    return <div className={className} style={style} />;
+    return <div className={className} style={style}/>;
   };
 
   _renderColumnsRightShadow = (/*number*/ totalWidth) => /*?object*/ {
@@ -331,7 +336,7 @@ class FixedDataTableRowImpl extends React.Component {
       var style = {
         height: this.props.height
       };
-      return <div className={className} style={style} />;
+      return <div className={className} style={style}/>;
     }
   };
 
@@ -364,7 +369,7 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    if(this.mouseLeaveIndex === null) {
+    if (this.mouseLeaveIndex === null) {
       this.mouseLeaveIndex = this.props.index;
     }
     this.props.onMouseLeave(event, this.mouseLeaveIndex);

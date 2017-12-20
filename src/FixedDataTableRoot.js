@@ -15,12 +15,14 @@ import FixedDataTable from 'FixedDataTable';
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumn from 'FixedDataTableColumn';
 import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
+import FixedDataTableRow from 'FixedDataTableRow'
 
 var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,
   Column: FixedDataTableColumn,
   ColumnGroup: FixedDataTableColumnGroup,
   Table: FixedDataTable,
+  Row: FixedDataTableRow,
 };
 
 FixedDataTableRoot.version = '0.8.7';
