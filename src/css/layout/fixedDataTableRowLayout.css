@@ -22,10 +22,19 @@
   top: 0;
 }
 
-.fixedDataTableRowLayout/rowExpanded {
+.fixedDataTableRowLayout/subRow {
   box-sizing: border-box;
   left: 0;
   position: absolute;
+}
+
+.fixedDataTableRowLayout/rowFooter {
+  box-sizing: border-box;
+  left: 0;
+  bottom:0;
+  width: 100%;
+  position: absolute;
+  z-index: 100;
 }
 
 .fixedDataTableRowLayout/fixedColumnsDivider {

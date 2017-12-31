@@ -68,6 +68,8 @@ class FixedDataTableRowImpl extends React.Component {
 
     subRowTopOffsetGetter: PropTypes.func,
 
+    rowFooter: PropTypes.node,
+
     /**
      * The row index.
      */
@@ -233,6 +235,8 @@ class FixedDataTableRowImpl extends React.Component {
       width: this.props.width,
     };
 
+    var rowFooter = this.props.rowFooter;
+
     return (
       <div
         className={joinClasses(className, this.props.className)}
@@ -253,9 +257,14 @@ class FixedDataTableRowImpl extends React.Component {
           {fixedRightColumns}
           {fixedRightColumnsShdadow}
         </div>
+        {rowFooter &&
+        <div className={cx('fixedDataTableRowLayout/rowFooter')}>
+          {rowFooter}
+        </div>
+        }
         {subRowsCount &&
         <div
-          className={cx('fixedDataTableRowLayout/rowExpanded')}
+          className={cx('fixedDataTableRowLayout/subRow')}
           style={rowExpandedStyle}
         >
           { Array(subRowsCount).fill(null).map((dummy, index) => {

@@ -207,6 +207,8 @@ var FixedDataTable = createReactClass({
 
     subRowTopOffsetGetter: PropTypes.func,
 
+    headerRowFooter: PropTypes.node,
+
     /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
@@ -731,6 +733,7 @@ var FixedDataTable = createReactClass({
         onColumnReorderEnd={this._onColumnReorderEnd}
         isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
+        rowFooter={state.headerRowFooter}
       />;
 
     var topShadow;

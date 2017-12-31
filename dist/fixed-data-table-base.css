@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.7 
+ * FixedDataTable v1.0.0 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -225,11 +225,21 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   top: 0;
 }
 
-.fixedDataTableRowLayout_rowExpanded {
+.fixedDataTableRowLayout_subRow {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   left: 0;
   position: absolute;
+}
+
+.fixedDataTableRowLayout_rowFooter {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  left: 0;
+  bottom:0;
+  width: 100%;
+  position: absolute;
+  z-index: 100;
 }
 
 .fixedDataTableRowLayout_fixedColumnsDivider {
